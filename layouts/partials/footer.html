@@ -3,13 +3,26 @@
     {{- if site.Copyright }}
     <span>{{ site.Copyright | markdownify }}</span>
     {{- else }}
-    <span>&copy; {{ now.Year }} <a href="{{ "" | absLangURL }}">{{ site.Title }}</a></span>
-    {{- end }}
     <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+        Copyright
+        &copy;
+        {{ site.Params.StartYear }}-{{ now.Year }}
+        <a href="{{ "" | absLangURL }}" style="color:#939393;">{{ site.Title }}</a>
+        All Rights Reserved
     </span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;">{{ site.Params.FilingNo }}</a>&nbsp;
+<!--    <span>-->
+<!--        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"-->
+<!--           style="display:inline-block;text-decoration:none;height:20px;color:#939393;">-->
+<!--            <img src="{{ site.Params.PublicSecurityIconLink }}" style="float:left;margin: 0px 5px 0px 0px;"/>-->
+<!--            {{ site.Params.PublicNetworkSecurity }}-->
+<!--        </a>-->
+<!--    </span>-->
+    <span id="busuanzi_container">
+        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
+        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
+    </span>
+    {{- end }}
 </footer>
 {{- end }}
 
@@ -84,6 +97,27 @@
 </script>
 {{- end }}
 
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+{{ site.Title }}+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+{{ site.Title }}+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+
 {{- if (and (eq .Kind "page") (ne .Layout "archives") (ne .Layout "search") (.Param "ShowCodeCopyButtons")) }}
 <script>
     document.querySelectorAll('pre > code').forEach((codeblock) => {
@@ -102,7 +136,11 @@
 
         copybutton.addEventListener('click', (cb) => {
             if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+{{ site.Title }}+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
                 copyingDone();
                 return;
             }
@@ -131,5 +169,19 @@
             codeblock.parentNode.appendChild(copybutton);
         }
     });
+</script>
+{{- end }}
+
+{{- if site.Params.extendCodeBackground }}
+<script>
+    $("code[class^=language] ").on("mouseover", function () {
+        if (this.clientWidth < this.scrollWidth) {
+            $(this).css("width", "135%")
+            $(this).css("border-top-right-radius", "var(--radius)")
+        }
+    }).on("mouseout", function () {
+        $(this).css("width", "100%")
+        $(this).css("border-top-right-radius", "unset")
+    })
 </script>
 {{- end }}
